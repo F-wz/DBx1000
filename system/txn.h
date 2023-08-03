@@ -38,6 +38,7 @@ public:
 class txn_man
 {
 public:
+	virtual void init(/*thread_t * h_thd, */workload * h_wl/*, uint64_t part_id*/);
 	virtual void init(thread_t * h_thd, workload * h_wl, uint64_t part_id);
 	void release();
 	thread_t * h_thd;

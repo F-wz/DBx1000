@@ -14,6 +14,7 @@ public:
 	RC init_table();
 	RC init_schema(const char * schema_file);
 	RC get_txn_man(txn_man *& txn_manager, thread_t * h_thd);
+	RC get_txn_man(txn_man *& txn_manager);
 	table_t * 		t_warehouse;
 	table_t * 		t_district;
 	table_t * 		t_customer;
@@ -36,6 +37,15 @@ public:
 	
 	bool ** delivering;
 	uint32_t next_tid;
+
+	std::vector<UInt32>   t_item_primary_key_set_;
+	std::vector<uint32_t> t_wh_primary_key_set_;
+	std::vector<uint64_t> t_dist_primary_key_set_;
+	std::vector<UInt32>   t_stock_primary_key_set_;
+	std::vector<UInt32>   t_cust_primary_key_set_;
+	std::vector<int32_t>  t_hist_primary_key_set_;
+	std::vector<UInt32>   t_order_primary_key_set_;
+
 private:
 	uint64_t num_wh;
 	void init_tab_item();
@@ -62,6 +72,7 @@ private:
 class tpcc_txn_man : public txn_man
 {
 public:
+	void init(/*thread_t * h_thd, */workload * h_wl/*, uint64_t part_id*/); 
 	void init(thread_t * h_thd, workload * h_wl, uint64_t part_id); 
 	RC run_txn(base_query * query);
 private:

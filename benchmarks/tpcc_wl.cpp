@@ -84,6 +84,13 @@ RC tpcc_wl::get_txn_man(txn_man *& txn_manager, thread_t * h_thd) {
 	return RCOK;
 }
 
+RC tpcc_wl::get_txn_man(txn_man *& txn_manager) {
+	txn_manager = (tpcc_txn_man *) _mm_malloc( sizeof(tpcc_txn_man), 64);
+	new(txn_manager) tpcc_txn_man();
+	txn_manager->init(this);
+	return RCOK;
+}
+
 // TODO ITEM table is assumed to be in partition 0
 void tpcc_wl::init_tab_item() {
 	for (UInt32 i = 1; i <= g_max_items; i++) {
@@ -91,6 +98,9 @@ void tpcc_wl::init_tab_item() {
 		uint64_t row_id;
 		t_item->get_new_row(row, 0, row_id);
 		row->set_primary_key(i);
+
+		this->t_item_primary_key_set_.emplace_back(i);
+
 		row->set_value(I_ID, i);
 		row->set_value(I_IM_ID, URand(1L,10000L, 0));
 		char name[24];
@@ -114,6 +124,8 @@ void tpcc_wl::init_tab_wh(uint32_t wid) {
 	uint64_t row_id;
 	t_warehouse->get_new_row(row, 0, row_id);
 	row->set_primary_key(wid);
+
+	this->t_wh_primary_key_set_.emplace_back(wid);
 
 	row->set_value(W_ID, wid);
 	char name[10];
@@ -147,6 +159,8 @@ void tpcc_wl::init_tab_dist(uint64_t wid) {
 		uint64_t row_id;
 		t_district->get_new_row(row, 0, row_id);
 		row->set_primary_key(did);
+
+		this->t_dist_primary_key_set_.emplace_back(did);
 		
 		row->set_value(D_ID, did);
 		row->set_value(D_W_ID, wid);
@@ -183,6 +197,9 @@ void tpcc_wl::init_tab_stock(uint64_t wid) {
 		uint64_t row_id;
 		t_stock->get_new_row(row, 0, row_id);
 		row->set_primary_key(sid);
+
+		this->t_stock_primary_key_set_.emplace_back(sid);
+
 		row->set_value(S_I_ID, sid);
 		row->set_value(S_W_ID, wid);
 		row->set_value(S_QUANTITY, URand(10, 100, wid-1));
@@ -223,6 +240,8 @@ void tpcc_wl::init_tab_cust(uint64_t did, uint64_t wid) {
 		uint64_t row_id;
 		t_customer->get_new_row(row, 0, row_id);
 		row->set_primary_key(cid);
+
+		this->t_cust_primary_key_set_.emplace_back(cid);
 
 		row->set_value(C_ID, cid);		
 		row->set_value(C_D_ID, did);
@@ -286,6 +305,9 @@ void tpcc_wl::init_tab_hist(uint64_t c_id, uint64_t d_id, uint64_t w_id) {
 	uint64_t row_id;
 	t_history->get_new_row(row, 0, row_id);
 	row->set_primary_key(0);
+
+	this->t_hist_primary_key_set_.emplace_back(0);
+
 	row->set_value(H_C_ID, c_id);
 	row->set_value(H_C_D_ID, d_id);
 	row->set_value(H_D_ID, d_id);
@@ -309,6 +331,9 @@ void tpcc_wl::init_tab_order(uint64_t did, uint64_t wid) {
 		uint64_t row_id;
 		t_order->get_new_row(row, 0, row_id);
 		row->set_primary_key(oid);
+
+		this->t_order_primary_key_set_.emplace_back(oid);
+
 		uint64_t o_ol_cnt = 1;
 		uint64_t cid = perm[oid - 1]; //get_permutation();
 		row->set_value(O_ID, oid);

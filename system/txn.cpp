@@ -10,8 +10,8 @@
 #include "index_btree.h"
 #include "index_hash.h"
 
-void txn_man::init(thread_t * h_thd, workload * h_wl, uint64_t thd_id) {
-	this->h_thd = h_thd;
+void txn_man::init(/*thread_t * h_thd, */workload * h_wl/*, uint64_t thd_id*/) {
+	// this->h_thd = h_thd;
 	this->h_wl = h_wl;
 	pthread_mutex_init(&txn_lock, NULL);
 	lock_ready = false;
@@ -23,23 +23,27 @@ void txn_man::init(thread_t * h_thd, workload * h_wl, uint64_t thd_id) {
 	for (int i = 0; i < MAX_ROW_PER_TXN; i++)
 		accesses[i] = NULL;
 	num_accesses_alloc = 0;
-#if CC_ALG == TICTOC || CC_ALG == SILO
-	_pre_abort = (g_params["pre_abort"] == "true");
-	if (g_params["validation_lock"] == "no-wait")
-		_validation_no_wait = true;
-	else if (g_params["validation_lock"] == "waiting")
-		_validation_no_wait = false;
-	else 
-		assert(false);
-#endif
-#if CC_ALG == TICTOC
-	_max_wts = 0;
-	_write_copy_ptr = (g_params["write_copy_form"] == "ptr");
-	_atomic_timestamp = (g_params["atomic_timestamp"] == "true");
-#elif CC_ALG == SILO
-	_cur_tid = 0;
-#endif
+// #if CC_ALG == TICTOC || CC_ALG == SILO
+// 	_pre_abort = (g_params["pre_abort"] == "true");
+// 	if (g_params["validation_lock"] == "no-wait")
+// 		_validation_no_wait = true;
+// 	else if (g_params["validation_lock"] == "waiting")
+// 		_validation_no_wait = false;
+// 	else 
+// 		assert(false);
+// #endif
+// #if CC_ALG == TICTOC
+// 	_max_wts = 0;
+// 	_write_copy_ptr = (g_params["write_copy_form"] == "ptr");
+// 	_atomic_timestamp = (g_params["atomic_timestamp"] == "true");
+// #elif CC_ALG == SILO
+// 	_cur_tid = 0;
+// #endif
 
+}
+
+void txn_man::init(thread_t * h_thd, workload * h_wl, uint64_t thd_id) {
+	this->init(h_wl);
 }
 
 void txn_man::set_txn_id(txnid_t txn_id) {
@@ -55,7 +59,8 @@ workload * txn_man::get_wl() {
 }
 
 uint64_t txn_man::get_thd_id() {
-	return h_thd->get_thd_id();
+	return 0;
+	// return h_thd->get_thd_id();
 }
 
 void txn_man::set_ts(ts_t timestamp) {
@@ -173,7 +178,7 @@ row_t * txn_man::get_row(row_t * row, access_t type) {
 		wr_cnt ++;
 
 	uint64_t timespan = get_sys_clock() - starttime;
-	INC_TMP_STATS(get_thd_id(), time_man, timespan);
+	// INC_TMP_STATS(get_thd_id(), time_man, timespan);
 	return accesses[row_cnt - 1]->data;
 }
 
@@ -189,7 +194,7 @@ txn_man::index_read(INDEX * index, idx_key_t key, int part_id) {
 	uint64_t starttime = get_sys_clock();
 	itemid_t * item;
 	index->index_read(key, item, part_id, get_thd_id());
-	INC_TMP_STATS(get_thd_id(), time_index, get_sys_clock() - starttime);
+	// INC_TMP_STATS(get_thd_id(), time_index, get_sys_clock() - starttime);
 	return item;
 }
 
@@ -197,7 +202,7 @@ void
 txn_man::index_read(INDEX * index, idx_key_t key, int part_id, itemid_t *& item) {
 	uint64_t starttime = get_sys_clock();
 	index->index_read(key, item, part_id, get_thd_id());
-	INC_TMP_STATS(get_thd_id(), time_index, get_sys_clock() - starttime);
+	// INC_TMP_STATS(get_thd_id(), time_index, get_sys_clock() - starttime);
 }
 
 RC txn_man::finish(RC rc) {
@@ -227,8 +232,8 @@ RC txn_man::finish(RC rc) {
 	cleanup(rc);
 #endif
 	uint64_t timespan = get_sys_clock() - starttime;
-	INC_TMP_STATS(get_thd_id(), time_man,  timespan);
-	INC_STATS(get_thd_id(), time_cleanup,  timespan);
+	// INC_TMP_STATS(get_thd_id(), time_man,  timespan);
+	// INC_STATS(get_thd_id(), time_cleanup,  timespan);
 	return rc;
 }
 
