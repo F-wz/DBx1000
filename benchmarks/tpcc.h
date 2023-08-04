@@ -8,10 +8,23 @@ class table_t;
 class INDEX;
 class tpcc_query;
 
+namespace benchmark {
+
+class TpccWorkload;
+
+};
+
 class tpcc_wl : public workload {
 public:
-	RC init();
-	RC init_table();
+	RC init() {
+		return this->init(nullptr);
+	}
+	RC init_table() {
+		return this->init_table(nullptr);
+	}
+
+	RC init(benchmark::TpccWorkload*);
+	RC init_table(benchmark::TpccWorkload*);
 	RC init_schema(const char * schema_file);
 	RC get_txn_man(txn_man *& txn_manager, thread_t * h_thd);
 	RC get_txn_man(txn_man *& txn_manager);
@@ -38,23 +51,17 @@ public:
 	bool ** delivering;
 	uint32_t next_tid;
 
-	std::vector<UInt32>   t_item_primary_key_set_;
-	std::vector<uint32_t> t_wh_primary_key_set_;
-	std::vector<uint64_t> t_dist_primary_key_set_;
-	std::vector<UInt32>   t_stock_primary_key_set_;
-	std::vector<UInt32>   t_cust_primary_key_set_;
-	std::vector<int32_t>  t_hist_primary_key_set_;
-	std::vector<UInt32>   t_order_primary_key_set_;
+	benchmark::TpccWorkload* tpcc_workload_ptr_;
 
 private:
 	uint64_t num_wh;
-	void init_tab_item();
-	void init_tab_wh(uint32_t wid);
-	void init_tab_dist(uint64_t w_id);
-	void init_tab_stock(uint64_t w_id);
-	void init_tab_cust(uint64_t d_id, uint64_t w_id);
-	void init_tab_hist(uint64_t c_id, uint64_t d_id, uint64_t w_id);
-	void init_tab_order(uint64_t d_id, uint64_t w_id);
+	void init_tab_item(benchmark::TpccWorkload*);
+	void init_tab_wh(benchmark::TpccWorkload*, uint32_t wid);
+	void init_tab_dist(benchmark::TpccWorkload*, uint64_t w_id);
+	void init_tab_stock(benchmark::TpccWorkload*, uint64_t w_id);
+	void init_tab_cust(benchmark::TpccWorkload*, uint64_t d_id, uint64_t w_id);
+	void init_tab_hist(benchmark::TpccWorkload*, uint64_t c_id, uint64_t d_id, uint64_t w_id);
+	void init_tab_order(benchmark::TpccWorkload*, uint64_t d_id, uint64_t w_id);
 	
 	void init_permutation(uint64_t * perm_c_id, uint64_t wid);
 

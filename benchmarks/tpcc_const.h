@@ -1,3 +1,6 @@
+#ifndef _TPCC_CONST_H_
+#define _TPCC_CONST_H_
+
 #if TPCC_SMALL 
 enum {
 	W_ID,
@@ -192,3 +195,5 @@ enum {
 	S_DATA
 };
 #endif
+
+#endif // _TPCC_CONST_H_
