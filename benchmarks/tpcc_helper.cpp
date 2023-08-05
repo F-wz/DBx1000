@@ -18,7 +18,7 @@ uint64_t orderPrimaryKey(uint64_t w_id, uint64_t d_id, uint64_t o_id) {
 	return orderlineKey(w_id, d_id, o_id); 
 }
 
-uint64_t custNPKey(char * c_last, uint64_t c_d_id, uint64_t c_w_id) {
+uint64_t custNPKey(const char * c_last, uint64_t c_d_id, uint64_t c_w_id) {
 	uint64_t key = 0;
 	char offset = 'A';
 	for (uint32_t i = 0; i < strlen(c_last); i++) 

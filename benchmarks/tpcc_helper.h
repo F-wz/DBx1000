@@ -7,7 +7,7 @@ uint64_t custKey(uint64_t c_id, uint64_t c_d_id, uint64_t c_w_id);
 uint64_t orderlineKey(uint64_t w_id, uint64_t d_id, uint64_t o_id);
 uint64_t orderPrimaryKey(uint64_t w_id, uint64_t d_id, uint64_t o_id);
 // non-primary key
-uint64_t custNPKey(char * c_last, uint64_t c_d_id, uint64_t c_w_id);
+uint64_t custNPKey(const char * c_last, uint64_t c_d_id, uint64_t c_w_id);
 uint64_t stockKey(uint64_t s_i_id, uint64_t s_w_id);
 
 uint64_t Lastname(uint64_t num, char* name);

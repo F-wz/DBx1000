@@ -33,22 +33,22 @@ RC tpcc_wl::init(benchmark::TpccWorkload* tpcc_workload_ptr) {
 
 RC tpcc_wl::init_schema(const char * schema_file) {
 	workload::init_schema(schema_file);
-	t_warehouse = tables["WAREHOUSE"];
-	t_district = tables["DISTRICT"];
-	t_customer = tables["CUSTOMER"];
-	t_history = tables["HISTORY"];
-	t_neworder = tables["NEW-ORDER"];
-	t_order = tables["ORDER"];
-	t_orderline = tables["ORDER-LINE"];
-	t_item = tables["ITEM"];
-	t_stock = tables["STOCK"];
+	// t_warehouse = tables["WAREHOUSE"];
+	// t_district = tables["DISTRICT"];
+	// t_customer = tables["CUSTOMER"];
+	// t_history = tables["HISTORY"];
+	// t_neworder = tables["NEW-ORDER"];
+	// t_order = tables["ORDER"];
+	// t_orderline = tables["ORDER-LINE"];
+	// t_item = tables["ITEM"];
+	// t_stock = tables["STOCK"];
 
-	i_item = indexes["ITEM_IDX"];
-	i_warehouse = indexes["WAREHOUSE_IDX"];
-	i_district = indexes["DISTRICT_IDX"];
-	i_customer_id = indexes["CUSTOMER_ID_IDX"];
-	i_customer_last = indexes["CUSTOMER_LAST_IDX"];
-	i_stock = indexes["STOCK_IDX"];
+	// i_item = indexes["ITEM_IDX"];
+	// i_warehouse = indexes["WAREHOUSE_IDX"];
+	// i_district = indexes["DISTRICT_IDX"];
+	// i_customer_id = indexes["CUSTOMER_ID_IDX"];
+	// i_customer_last = indexes["CUSTOMER_LAST_IDX"];
+	// i_stock = indexes["STOCK_IDX"];
 	return RCOK;
 }
 
@@ -100,88 +100,89 @@ void tpcc_wl::init_tab_item(benchmark::TpccWorkload* tpcc_workload_ptr) {
 	tpcc_workload_ptr->item_table_.Resize(g_max_items);
 
 	for (UInt32 i = 1; i <= g_max_items; i++) {
-		row_t * row;
+		// row_t * row;
 		uint64_t row_id;
 		
 		std::array<char, 24> i_name_array;
 		std::array<char, 50> i_data_array;
 
-		t_item->get_new_row(row, 0, row_id);
-		row->set_primary_key(i);
-		row->set_value(I_ID, i);
+		// t_item->get_new_row(row, 0, row_id);
+		// row->set_primary_key(i);
+		// row->set_value(I_ID, i);
 		uint64_t i_im_id = URand(1L,10000L, 0);
-		row->set_value(I_IM_ID, i_im_id);
+		// row->set_value(I_IM_ID, i_im_id);
 		char name[24];
 		MakeAlphaString(14, 24, name, 0);
-		row->set_value(I_NAME, name);
+		// row->set_value(I_NAME, name);
 		uint64_t i_price = URand(1, 100, 0);
-		row->set_value(I_PRICE, i_price);
+		// row->set_value(I_PRICE, i_price);
 		char data[50];
     	MakeAlphaString(26, 50, data, 0);
 		// TODO in TPCC, "original" should start at a random position
 		if (RAND(10, 0) == 0) 
 			strcpy(data, "original");		
-		row->set_value(I_DATA, data);
+		// row->set_value(I_DATA, data);
 
 		memcpy( i_name_array.data(), name, 24 );
 		memcpy( i_data_array.data(), data, 50 );
 		
-		index_insert(i_item, i, row, 0);
+		// index_insert(i_item, i, row, 0);
 
 		tpcc_workload_ptr->item_table_.template set_value_by_key<"I_ID"_tstr>   (row_idx, i);
 		tpcc_workload_ptr->item_table_.template set_value_by_key<"I_IM_ID"_tstr>(row_idx, i_im_id);
 		tpcc_workload_ptr->item_table_.template set_value_by_key<"I_NAME"_tstr> (row_idx, i_name_array);
 		tpcc_workload_ptr->item_table_.template set_value_by_key<"I_PRICE"_tstr>(row_idx, i_price);
 		tpcc_workload_ptr->item_table_.template set_value_by_key<"I_DATA"_tstr> (row_idx, i_data_array);
+
+		tpcc_workload_ptr->i_item_.index_insert(i, row_idx, 0);
 	}
 }
 
 void tpcc_wl::init_tab_wh(benchmark::TpccWorkload* tpcc_workload_ptr, uint32_t wid) {
 	assert(wid >= 1 && wid <= g_num_wh);
-	row_t * row;
+	std::array<char, 10> w_name_array;
+	std::array<char, 20> w_street_1_array;
+	std::array<char, 20> w_street_2_array;
+	std::array<char, 20> w_city_array;
+	std::array<char, 2> w_state_array;
+	std::array<char, 9> w_zip_array;
+
+	// row_t * row;
 	uint64_t row_id;
-	t_warehouse->get_new_row(row, 0, row_id);
-	row->set_primary_key(wid);
-	row->set_value(W_ID, wid);
+	// t_warehouse->get_new_row(row, 0, row_id);
+	// row->set_primary_key(wid);
+	// row->set_value(W_ID, wid);
 	char name[10];
     MakeAlphaString(6, 10, name, wid-1);
-	row->set_value(W_NAME, name);
+	// row->set_value(W_NAME, name);
 	char street[20];
     MakeAlphaString(10, 20, street, wid-1);
-	row->set_value(W_STREET_1, street);
+	memcpy( w_street_1_array.data(), street, 20 );
+	// row->set_value(W_STREET_1, street);
+
     MakeAlphaString(10, 20, street, wid-1);
-	row->set_value(W_STREET_2, street);
+	memcpy( w_street_2_array.data(), street, 20 );
+	// row->set_value(W_STREET_2, street);
+
     MakeAlphaString(10, 20, street, wid-1);
-	row->set_value(W_CITY, street);
+	memcpy( w_city_array.data(), street, 20 );
+	// row->set_value(W_CITY, street);
+
 	char state[2];
 	MakeAlphaString(2, 2, state, wid-1); /* State */
-	row->set_value(W_STATE, state);
+	// row->set_value(W_STATE, state);
 	char zip[9];
    	MakeNumberString(9, 9, zip, wid-1); /* Zip */
-	row->set_value(W_ZIP, zip);
+	// row->set_value(W_ZIP, zip);
    	double tax = (double)URand(0L,200L,wid-1)/1000.0;
    	double w_ytd=300000.00;
-	row->set_value(W_TAX, tax);
-	row->set_value(W_YTD, w_ytd);
+	// row->set_value(W_TAX, tax);
+	// row->set_value(W_YTD, w_ytd);
 	
-	index_insert(i_warehouse, wid, row, wh_to_part(wid));
+	// index_insert(i_warehouse, wid, row, wh_to_part(wid));
 
-	std::array<char, 10> w_name_array;
 	memcpy( w_name_array.data(), name, 10 );
-
-	std::array<char, 20> w_street_1_array;
-	memcpy( w_street_1_array.data(), street, 20 );
-
-	std::array<char, 20> w_street_2_array;
-	memcpy( w_street_2_array.data(), street, 20 );
-
-	std::array<char, 20> w_city_array;
-	memcpy( w_city_array.data(), street, 20 );
-
-	std::array<char, 2> w_state_array;
 	memcpy( w_state_array.data(), state, 2 );
-
-	std::array<char, 9> w_zip_array;
 	memcpy( w_zip_array.data(), zip, 9 );
 
 	const size_t row_idx = 0;
@@ -196,6 +197,8 @@ void tpcc_wl::init_tab_wh(benchmark::TpccWorkload* tpcc_workload_ptr, uint32_t w
 	tpcc_workload_ptr->ware_house_table_.template set_value_by_key<"W_ZIP"_tstr>(row_idx, w_zip_array);
 	tpcc_workload_ptr->ware_house_table_.template set_value_by_key<"W_TAX"_tstr>(row_idx, tax);
 	tpcc_workload_ptr->ware_house_table_.template set_value_by_key<"W_YTD"_tstr>(row_idx, w_ytd);
+
+	tpcc_workload_ptr->i_warehouse_.index_insert(wid, row_idx, wh_to_part(wid));
 	return;
 }
 
@@ -204,52 +207,53 @@ void tpcc_wl::init_tab_dist(benchmark::TpccWorkload* tpcc_workload_ptr, uint64_t
 	tpcc_workload_ptr->district_table_.Resize(DIST_PER_WARE);
 
 	for (uint64_t did = 1; did <= DIST_PER_WARE; did++) {
-		row_t * row;
+		std::array<char, 10> d_name_array;
+		std::array<char, 20> d_street_1_array;
+		std::array<char, 20> d_street_2_array;
+		std::array<char, 20> d_city_array;
+		std::array<char, 2 > d_state_array;
+		std::array<char, 2 > d_zip_array;
+		
+		// row_t * row;
 		uint64_t row_id;
-		t_district->get_new_row(row, 0, row_id);
-		row->set_primary_key(did);
-		row->set_value(D_ID, did);
-		row->set_value(D_W_ID, wid);
+		// t_district->get_new_row(row, 0, row_id);
+		// row->set_primary_key(did);
+		// row->set_value(D_ID, did);
+		// row->set_value(D_W_ID, wid);
 		char name[10];
 		MakeAlphaString(6, 10, name, wid-1);
-		row->set_value(D_NAME, name);
+		// row->set_value(D_NAME, name);
 		char street[20];
         MakeAlphaString(10, 20, street, wid-1);
-		row->set_value(D_STREET_1, street);
+		memcpy( d_street_1_array.data(), street, 20 );
+		// row->set_value(D_STREET_1, street);
+
         MakeAlphaString(10, 20, street, wid-1);
-		row->set_value(D_STREET_2, street);
+		memcpy( d_street_2_array.data(), street, 20 );
+		// row->set_value(D_STREET_2, street);
+		
         MakeAlphaString(10, 20, street, wid-1);
-		row->set_value(D_CITY, street);
+		memcpy( d_city_array.data(), street, 20 );
+		// row->set_value(D_CITY, street);
+
 		char state[2];
 		MakeAlphaString(2, 2, state, wid-1); /* State */
-		row->set_value(D_STATE, state);
+		// row->set_value(D_STATE, state);
 		char zip[9];
     	MakeNumberString(9, 9, zip, wid-1); /* Zip */
-		row->set_value(D_ZIP, zip);
+		// row->set_value(D_ZIP, zip);
     	double tax = (double)URand(0L,200L,wid-1)/1000.0;
     	double w_ytd=30000.00;
-		row->set_value(D_TAX, tax);
-		row->set_value(D_YTD, w_ytd);
-		row->set_value(D_NEXT_O_ID, 3001);
+		// row->set_value(D_TAX, tax);
+		// row->set_value(D_YTD, w_ytd);
+		// row->set_value(D_NEXT_O_ID, 3001);
 		
-		index_insert(i_district, distKey(did, wid), row, wh_to_part(wid));
+		// index_insert(i_district, distKey(did, wid), row, wh_to_part(wid));
 
-		std::array<char, 10> d_name_array;
 		memcpy( d_name_array.data(), name, 10 );
 
-		std::array<char, 20> d_street_1_array;
-		memcpy( d_street_1_array.data(), street, 20 );
-
-		std::array<char, 20> d_street_2_array;
-		memcpy( d_street_2_array.data(), street, 20 );
-
-		std::array<char, 20> d_city_array;
-		memcpy( d_city_array.data(), street, 20 );
-
-		std::array<char, 2> d_state_array;
 		memcpy( d_state_array.data(), state, 2 );
 
-		std::array<char, 2> d_zip_array;
 		memcpy( d_zip_array.data(), zip, 2 );
 
 		tpcc_workload_ptr->district_table_.template set_value_by_key<"D_ID"_tstr>       (row_idx, did);
@@ -263,6 +267,8 @@ void tpcc_wl::init_tab_dist(benchmark::TpccWorkload* tpcc_workload_ptr, uint64_t
 		tpcc_workload_ptr->district_table_.template set_value_by_key<"D_TAX"_tstr>      (row_idx, tax);
 		tpcc_workload_ptr->district_table_.template set_value_by_key<"D_YTD"_tstr>      (row_idx, w_ytd);
 		tpcc_workload_ptr->district_table_.template set_value_by_key<"D_NEXT_O_ID"_tstr>(row_idx, 3001);
+
+		tpcc_workload_ptr->i_district_.index_insert(distKey(did, wid), row_idx, wh_to_part(wid));
 		row_idx++;
 	}
 }
@@ -272,15 +278,15 @@ void tpcc_wl::init_tab_stock(benchmark::TpccWorkload* tpcc_workload_ptr, uint64_
 	tpcc_workload_ptr->stock_table_.Resize(g_max_items);
 	
 	for (UInt32 sid = 1; sid <= g_max_items; sid++) {
-		row_t * row;
+		// row_t * row;
 		uint64_t row_id;
 		uint64_t s_quantity = URand(10, 100, wid-1);
-		t_stock->get_new_row(row, 0, row_id);
-		row->set_primary_key(sid);
-		row->set_value(S_I_ID, sid);
-		row->set_value(S_W_ID, wid);
-		row->set_value(S_QUANTITY, s_quantity);
-		row->set_value(S_REMOTE_CNT, 0);
+		// t_stock->get_new_row(row, 0, row_id);
+		// row->set_primary_key(sid);
+		// row->set_value(S_I_ID, sid);
+		// row->set_value(S_W_ID, wid);
+		// row->set_value(S_QUANTITY, s_quantity);
+		// row->set_value(S_REMOTE_CNT, 0);
 #if !TPCC_SMALL
 		char s_dist[25];
 		char row_name[10] = "S_DIST_";
@@ -294,24 +300,26 @@ void tpcc_wl::init_tab_stock(benchmark::TpccWorkload* tpcc_workload_ptr, uint64_
 			}
 			row_name[9] = '\0';
 			MakeAlphaString(24, 24, s_dist, wid-1);
-			row->set_value(row_name, s_dist);
+			// row->set_value(row_name, s_dist);
 		}
-		row->set_value(S_YTD, 0);
-		row->set_value(S_ORDER_CNT, 0);
+		// row->set_value(S_YTD, 0);
+		// row->set_value(S_ORDER_CNT, 0);
 		char s_data[50];
 		int len = MakeAlphaString(26, 50, s_data, wid-1);
 		if (rand() % 100 < 10) {
 			int idx = URand(0, len - 8, wid-1);
 			strcpy(&s_data[idx], "original");
 		}
-		row->set_value(S_DATA, s_data);
+		// row->set_value(S_DATA, s_data);
 #endif
-		index_insert(i_stock, stockKey(sid, wid), row, wh_to_part(wid));
+		// index_insert(i_stock, stockKey(sid, wid), row, wh_to_part(wid));
 
 		tpcc_workload_ptr->stock_table_.template set_value_by_key<"S_I_ID"_tstr>      (row_idx, sid);
 		tpcc_workload_ptr->stock_table_.template set_value_by_key<"S_W_ID"_tstr>      (row_idx, wid);
 		tpcc_workload_ptr->stock_table_.template set_value_by_key<"S_QUANTITY"_tstr>  (row_idx, s_quantity);
 		tpcc_workload_ptr->stock_table_.template set_value_by_key<"S_REMOTE_CNT"_tstr>(row_idx, 0);
+
+		tpcc_workload_ptr->i_stock_.index_insert(stockKey(sid, wid), row_idx, wh_to_part(wid));
 		row_idx++;
 	}
 }
@@ -327,28 +335,28 @@ void tpcc_wl::init_tab_cust(benchmark::TpccWorkload* tpcc_workload_ptr, uint64_t
 		std::array<char,  2> c_state_array;
 		std::array<char,  2> c_credit_array;
 		
-		row_t * row;
+		// row_t * row;
 		uint64_t row_id;
-		t_customer->get_new_row(row, 0, row_id);
-		row->set_primary_key(cid);
-		row->set_value(C_ID, cid);		
-		row->set_value(C_D_ID, did);
-		row->set_value(C_W_ID, wid);
+		// t_customer->get_new_row(row, 0, row_id);
+		// row->set_primary_key(cid);
+		// row->set_value(C_ID, cid);		
+		// row->set_value(C_D_ID, did);
+		// row->set_value(C_W_ID, wid);
 		char c_last[LASTNAME_LEN];
 		if (cid <= 1000)
 			Lastname(cid - 1, c_last);
 		else
 			Lastname(NURand(255,0,999,wid-1), c_last);
-		row->set_value(C_LAST, c_last);
+		// row->set_value(C_LAST, c_last);
 		memcpy( c_last_array.data(), c_last, LASTNAME_LEN );
 
 		char tmp[3] = "OE";
-		row->set_value(C_MIDDLE, tmp);
+		// row->set_value(C_MIDDLE, tmp);
 		memcpy( c_middle_array.data(), tmp, 2 );
 
 		char state[2];
 		MakeAlphaString(2, 2, state, wid-1); /* State */
-		row->set_value(C_STATE, state);
+		// row->set_value(C_STATE, state);
 		memcpy( c_state_array.data(), state, 2 );
 
 #if !TPCC_SMALL
@@ -377,23 +385,26 @@ void tpcc_wl::init_tab_cust(benchmark::TpccWorkload* tpcc_workload_ptr, uint64_t
 #endif
 		if (RAND(10, wid-1) == 0) {
 			char tmp[] = "GC";
-			row->set_value(C_CREDIT, tmp);
+			// row->set_value(C_CREDIT, tmp);
 			memcpy( c_credit_array.data(), tmp, 2 );
 		} else {
 			char tmp[] = "BC";
-			row->set_value(C_CREDIT, tmp);
+			// row->set_value(C_CREDIT, tmp);
 			memcpy( c_credit_array.data(), tmp, 2 );
 		}
 		double c_discount =  (double)RAND(5000,wid-1) / 10000;
-		row->set_value(C_DISCOUNT, c_discount);
-		row->set_value(C_BALANCE, -10.0);
-		row->set_value(C_YTD_PAYMENT, 10.0);
-		row->set_value(C_PAYMENT_CNT, 1);
+		// row->set_value(C_DISCOUNT, c_discount);
+		// row->set_value(C_BALANCE, -10.0);
+		// row->set_value(C_YTD_PAYMENT, 10.0);
+		// row->set_value(C_PAYMENT_CNT, 1);
 		uint64_t key;
 		key = custNPKey(c_last, did, wid);
-		index_insert(i_customer_last, key, row, wh_to_part(wid));
+		// index_insert(i_customer_last, key, row, wh_to_part(wid));
+		tpcc_workload_ptr->i_customer_last_.index_insert(key, row_idx, wh_to_part(wid));
+
 		key = custKey(cid, did, wid);
-		index_insert(i_customer_id, key, row, wh_to_part(wid));
+		// index_insert(i_customer_id, key, row, wh_to_part(wid));
+		tpcc_workload_ptr->i_customer_id_.index_insert(key, row_idx, wh_to_part(wid));
 
 		tpcc_workload_ptr->customer_table_.template set_value_by_key<"C_ID"_tstr>         (row_idx, cid);
 		tpcc_workload_ptr->customer_table_.template set_value_by_key<"C_D_ID"_tstr>       (row_idx, did);
@@ -411,17 +422,17 @@ void tpcc_wl::init_tab_cust(benchmark::TpccWorkload* tpcc_workload_ptr, uint64_t
 }
 
 void tpcc_wl::init_tab_hist(benchmark::TpccWorkload* tpcc_workload_ptr, uint64_t c_id, uint64_t d_id, uint64_t w_id) {
-	row_t * row;
+	// row_t * row;
 	uint64_t row_id;
-	t_history->get_new_row(row, 0, row_id);
-	row->set_primary_key(0);
-	row->set_value(H_C_ID, c_id);
-	row->set_value(H_C_D_ID, d_id);
-	row->set_value(H_D_ID, d_id);
-	row->set_value(H_C_W_ID, w_id);
-	row->set_value(H_W_ID, w_id);
-	row->set_value(H_DATE, 0);
-	row->set_value(H_AMOUNT, 10.0);
+	// t_history->get_new_row(row, 0, row_id);
+	// row->set_primary_key(0);
+	// row->set_value(H_C_ID, c_id);
+	// row->set_value(H_C_D_ID, d_id);
+	// row->set_value(H_D_ID, d_id);
+	// row->set_value(H_C_W_ID, w_id);
+	// row->set_value(H_W_ID, w_id);
+	// row->set_value(H_DATE, 0);
+	// row->set_value(H_AMOUNT, 10.0);
 #if !TPCC_SMALL
 	char h_data[24];
 	MakeAlphaString(12, 24, h_data, w_id-1);
@@ -449,30 +460,30 @@ void tpcc_wl::init_tab_order(benchmark::TpccWorkload* tpcc_workload_ptr, uint64_
 	uint64_t perm[g_cust_per_dist]; 
 	init_permutation(perm, wid); /* initialize permutation of customer numbers */
 	for (UInt32 oid = 1; oid <= g_cust_per_dist; oid++) {
-		row_t * row;
+		// row_t * row;
 		uint64_t row_id;
-		t_order->get_new_row(row, 0, row_id);
-		row->set_primary_key(oid);
+		// t_order->get_new_row(row, 0, row_id);
+		// row->set_primary_key(oid);
 		int64_t o_carrier_id = 1;
 		uint64_t o_ol_cnt = 1;
 		uint64_t cid = perm[oid - 1]; //get_permutation();
-		row->set_value(O_ID, oid);
-		row->set_value(O_C_ID, cid);
-		row->set_value(O_D_ID, did);
-		row->set_value(O_W_ID, wid);
+		// row->set_value(O_ID, oid);
+		// row->set_value(O_C_ID, cid);
+		// row->set_value(O_D_ID, did);
+		// row->set_value(O_W_ID, wid);
 		uint64_t o_entry = 2013;
-		row->set_value(O_ENTRY_D, o_entry);
+		// row->set_value(O_ENTRY_D, o_entry);
 		if (oid < 2101) {
 			o_carrier_id = URand(1, 10, wid-1);
-			row->set_value(O_CARRIER_ID, o_carrier_id);
+			// row->set_value(O_CARRIER_ID, o_carrier_id);
 		}
 		else {
 			o_carrier_id = 0;
-			row->set_value(O_CARRIER_ID, 0);
+			// row->set_value(O_CARRIER_ID, 0);
 		}
 		o_ol_cnt = URand(5, 15, wid-1);
-		row->set_value(O_OL_CNT, o_ol_cnt);
-		row->set_value(O_ALL_LOCAL, 1);
+		// row->set_value(O_OL_CNT, o_ol_cnt);
+		// row->set_value(O_ALL_LOCAL, 1);
 		
 		// ORDER-LINE	
 #if !TPCC_SMALL
@@ -510,10 +521,10 @@ void tpcc_wl::init_tab_order(benchmark::TpccWorkload* tpcc_workload_ptr, uint64_
 
 		// NEW ORDER
 		if (oid > 2100) {
-			t_neworder->get_new_row(row, 0, row_id);
-			row->set_value(NO_O_ID, oid);
-			row->set_value(NO_D_ID, did);
-			row->set_value(NO_W_ID, wid);
+			// t_neworder->get_new_row(row, 0, row_id);
+			// row->set_value(NO_O_ID, oid);
+			// row->set_value(NO_D_ID, did);
+			// row->set_value(NO_W_ID, wid);
 
 			tpcc_workload_ptr->new_order_table_.template set_value_by_key<"NO_O_ID"_tstr>(row_idx - 2100 - 1, oid);
 			tpcc_workload_ptr->new_order_table_.template set_value_by_key<"NO_D_ID"_tstr>(row_idx - 2100 - 1, did);
