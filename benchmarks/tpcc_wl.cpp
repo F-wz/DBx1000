@@ -135,6 +135,7 @@ void tpcc_wl::init_tab_item(benchmark::TpccWorkload* tpcc_workload_ptr) {
 		tpcc_workload_ptr->item_table_.template set_value_by_key<"I_DATA"_tstr> (row_idx, i_data_array);
 
 		tpcc_workload_ptr->i_item_.index_insert(i, row_idx, 0);
+		row_idx++;
 	}
 }
 
