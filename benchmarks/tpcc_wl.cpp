@@ -128,11 +128,11 @@ void tpcc_wl::init_tab_item(benchmark::TpccWorkload* tpcc_workload_ptr) {
 		
 		// index_insert(i_item, i, row, 0);
 
-		tpcc_workload_ptr->item_table_.template set_value_by_key<"I_ID"_tstr>   (row_idx, i);
-		tpcc_workload_ptr->item_table_.template set_value_by_key<"I_IM_ID"_tstr>(row_idx, i_im_id);
-		tpcc_workload_ptr->item_table_.template set_value_by_key<"I_NAME"_tstr> (row_idx, i_name_array);
-		tpcc_workload_ptr->item_table_.template set_value_by_key<"I_PRICE"_tstr>(row_idx, i_price);
-		tpcc_workload_ptr->item_table_.template set_value_by_key<"I_DATA"_tstr> (row_idx, i_data_array);
+		tpcc_workload_ptr->item_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"I_ID"_tstr>   (i);
+		tpcc_workload_ptr->item_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"I_IM_ID"_tstr>(i_im_id);
+		tpcc_workload_ptr->item_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"I_NAME"_tstr> (i_name_array);
+		tpcc_workload_ptr->item_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"I_PRICE"_tstr>(i_price);
+		tpcc_workload_ptr->item_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"I_DATA"_tstr> (i_data_array);
 
 		tpcc_workload_ptr->i_item_.index_insert(i, row_idx, 0);
 		row_idx++;
@@ -189,15 +189,15 @@ void tpcc_wl::init_tab_wh(benchmark::TpccWorkload* tpcc_workload_ptr, uint32_t w
 	const size_t row_idx = 0;
 
 	tpcc_workload_ptr->ware_house_table_.Resize(1);
-	tpcc_workload_ptr->ware_house_table_.template set_value_by_key<"W_ID"_tstr> (row_idx, wid);
-	tpcc_workload_ptr->ware_house_table_.template set_value_by_key<"W_NAME"_tstr>(row_idx, w_name_array);
-	tpcc_workload_ptr->ware_house_table_.template set_value_by_key<"W_STREET_1"_tstr>(row_idx, w_street_1_array);
-	tpcc_workload_ptr->ware_house_table_.template set_value_by_key<"W_STREET_2"_tstr>(row_idx, w_street_2_array);
-	tpcc_workload_ptr->ware_house_table_.template set_value_by_key<"W_CITY"_tstr>(row_idx, w_city_array);
-	tpcc_workload_ptr->ware_house_table_.template set_value_by_key<"W_STATE"_tstr>(row_idx, w_state_array);
-	tpcc_workload_ptr->ware_house_table_.template set_value_by_key<"W_ZIP"_tstr>(row_idx, w_zip_array);
-	tpcc_workload_ptr->ware_house_table_.template set_value_by_key<"W_TAX"_tstr>(row_idx, tax);
-	tpcc_workload_ptr->ware_house_table_.template set_value_by_key<"W_YTD"_tstr>(row_idx, w_ytd);
+	tpcc_workload_ptr->ware_house_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"W_ID"_tstr> (wid);
+	tpcc_workload_ptr->ware_house_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"W_NAME"_tstr>(w_name_array);
+	tpcc_workload_ptr->ware_house_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"W_STREET_1"_tstr>(w_street_1_array);
+	tpcc_workload_ptr->ware_house_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"W_STREET_2"_tstr>(w_street_2_array);
+	tpcc_workload_ptr->ware_house_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"W_CITY"_tstr>(w_city_array);
+	tpcc_workload_ptr->ware_house_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"W_STATE"_tstr>(w_state_array);
+	tpcc_workload_ptr->ware_house_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"W_ZIP"_tstr>(w_zip_array);
+	tpcc_workload_ptr->ware_house_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"W_TAX"_tstr>(tax);
+	tpcc_workload_ptr->ware_house_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"W_YTD"_tstr>(w_ytd);
 
 	tpcc_workload_ptr->i_warehouse_.index_insert(wid, row_idx, wh_to_part(wid));
 	return;
@@ -257,17 +257,17 @@ void tpcc_wl::init_tab_dist(benchmark::TpccWorkload* tpcc_workload_ptr, uint64_t
 
 		memcpy( d_zip_array.data(), zip, 2 );
 
-		tpcc_workload_ptr->district_table_.template set_value_by_key<"D_ID"_tstr>       (row_idx, did);
-		tpcc_workload_ptr->district_table_.template set_value_by_key<"D_W_ID"_tstr>     (row_idx, wid);
-		tpcc_workload_ptr->district_table_.template set_value_by_key<"D_NAME"_tstr>     (row_idx, d_name_array);
-		tpcc_workload_ptr->district_table_.template set_value_by_key<"D_STREET_1"_tstr> (row_idx, d_street_1_array);
-		tpcc_workload_ptr->district_table_.template set_value_by_key<"D_STREET_2"_tstr> (row_idx, d_street_2_array);
-		tpcc_workload_ptr->district_table_.template set_value_by_key<"D_CITY"_tstr>     (row_idx, d_city_array);
-		tpcc_workload_ptr->district_table_.template set_value_by_key<"D_STATE"_tstr>    (row_idx, d_state_array);
-		tpcc_workload_ptr->district_table_.template set_value_by_key<"D_ZIP"_tstr>      (row_idx, d_zip_array);
-		tpcc_workload_ptr->district_table_.template set_value_by_key<"D_TAX"_tstr>      (row_idx, tax);
-		tpcc_workload_ptr->district_table_.template set_value_by_key<"D_YTD"_tstr>      (row_idx, w_ytd);
-		tpcc_workload_ptr->district_table_.template set_value_by_key<"D_NEXT_O_ID"_tstr>(row_idx, 3001);
+		tpcc_workload_ptr->district_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"D_ID"_tstr>       (did);
+		tpcc_workload_ptr->district_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"D_W_ID"_tstr>     (wid);
+		tpcc_workload_ptr->district_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"D_NAME"_tstr>     (d_name_array);
+		tpcc_workload_ptr->district_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"D_STREET_1"_tstr> (d_street_1_array);
+		tpcc_workload_ptr->district_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"D_STREET_2"_tstr> (d_street_2_array);
+		tpcc_workload_ptr->district_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"D_CITY"_tstr>     (d_city_array);
+		tpcc_workload_ptr->district_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"D_STATE"_tstr>    (d_state_array);
+		tpcc_workload_ptr->district_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"D_ZIP"_tstr>      (d_zip_array);
+		tpcc_workload_ptr->district_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"D_TAX"_tstr>      (tax);
+		tpcc_workload_ptr->district_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"D_YTD"_tstr>      (w_ytd);
+		tpcc_workload_ptr->district_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"D_NEXT_O_ID"_tstr>(3001);
 
 		tpcc_workload_ptr->i_district_.index_insert(distKey(did, wid), row_idx, wh_to_part(wid));
 		row_idx++;
@@ -315,10 +315,10 @@ void tpcc_wl::init_tab_stock(benchmark::TpccWorkload* tpcc_workload_ptr, uint64_
 #endif
 		// index_insert(i_stock, stockKey(sid, wid), row, wh_to_part(wid));
 
-		tpcc_workload_ptr->stock_table_.template set_value_by_key<"S_I_ID"_tstr>      (row_idx, sid);
-		tpcc_workload_ptr->stock_table_.template set_value_by_key<"S_W_ID"_tstr>      (row_idx, wid);
-		tpcc_workload_ptr->stock_table_.template set_value_by_key<"S_QUANTITY"_tstr>  (row_idx, s_quantity);
-		tpcc_workload_ptr->stock_table_.template set_value_by_key<"S_REMOTE_CNT"_tstr>(row_idx, 0);
+		tpcc_workload_ptr->stock_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"S_I_ID"_tstr>      (sid);
+		tpcc_workload_ptr->stock_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"S_W_ID"_tstr>      (wid);
+		tpcc_workload_ptr->stock_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"S_QUANTITY"_tstr>  (s_quantity);
+		tpcc_workload_ptr->stock_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"S_REMOTE_CNT"_tstr>(0);
 
 		tpcc_workload_ptr->i_stock_.index_insert(stockKey(sid, wid), row_idx, wh_to_part(wid));
 		row_idx++;
@@ -407,17 +407,17 @@ void tpcc_wl::init_tab_cust(benchmark::TpccWorkload* tpcc_workload_ptr, uint64_t
 		// index_insert(i_customer_id, key, row, wh_to_part(wid));
 		tpcc_workload_ptr->i_customer_id_.index_insert(key, row_idx, wh_to_part(wid));
 
-		tpcc_workload_ptr->customer_table_.template set_value_by_key<"C_ID"_tstr>         (row_idx, cid);
-		tpcc_workload_ptr->customer_table_.template set_value_by_key<"C_D_ID"_tstr>       (row_idx, did);
-		tpcc_workload_ptr->customer_table_.template set_value_by_key<"C_W_ID"_tstr>       (row_idx, wid);
-		tpcc_workload_ptr->customer_table_.template set_value_by_key<"C_MIDDLE"_tstr>     (row_idx, c_middle_array);
-		tpcc_workload_ptr->customer_table_.template set_value_by_key<"C_LAST"_tstr>       (row_idx, c_last_array);
-		tpcc_workload_ptr->customer_table_.template set_value_by_key<"C_STATE"_tstr>      (row_idx, c_state_array);
-		tpcc_workload_ptr->customer_table_.template set_value_by_key<"C_CREDIT"_tstr>     (row_idx, c_credit_array);
-		tpcc_workload_ptr->customer_table_.template set_value_by_key<"C_DISCOUNT"_tstr>   (row_idx, c_discount);
-		tpcc_workload_ptr->customer_table_.template set_value_by_key<"C_BALANCE"_tstr>    (row_idx, -10.0);
-		tpcc_workload_ptr->customer_table_.template set_value_by_key<"C_YTD_PAYMENT"_tstr>(row_idx, 10.0);
-		tpcc_workload_ptr->customer_table_.template set_value_by_key<"C_PAYMENT_CNT"_tstr>(row_idx, 1);
+		tpcc_workload_ptr->customer_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"C_ID"_tstr>         (cid);
+		tpcc_workload_ptr->customer_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"C_D_ID"_tstr>       (did);
+		tpcc_workload_ptr->customer_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"C_W_ID"_tstr>       (wid);
+		tpcc_workload_ptr->customer_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"C_MIDDLE"_tstr>     (c_middle_array);
+		tpcc_workload_ptr->customer_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"C_LAST"_tstr>       (c_last_array);
+		tpcc_workload_ptr->customer_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"C_STATE"_tstr>      (c_state_array);
+		tpcc_workload_ptr->customer_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"C_CREDIT"_tstr>     (c_credit_array);
+		tpcc_workload_ptr->customer_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"C_DISCOUNT"_tstr>   (c_discount);
+		tpcc_workload_ptr->customer_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"C_BALANCE"_tstr>    (-10.0);
+		tpcc_workload_ptr->customer_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"C_YTD_PAYMENT"_tstr>(10.0);
+		tpcc_workload_ptr->customer_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"C_PAYMENT_CNT"_tstr>(1);
 		row_idx++;
 	}
 }
@@ -443,13 +443,13 @@ void tpcc_wl::init_tab_hist(benchmark::TpccWorkload* tpcc_workload_ptr, uint64_t
 	const size_t row_idx = 0;
 
 	tpcc_workload_ptr->history_table_.Resize(1);
-	tpcc_workload_ptr->history_table_.template set_value_by_key<"H_C_ID"_tstr> (row_idx, c_id);
-	tpcc_workload_ptr->history_table_.template set_value_by_key<"H_C_D_ID"_tstr>(row_idx, d_id);
-	tpcc_workload_ptr->history_table_.template set_value_by_key<"H_C_W_ID"_tstr>(row_idx, d_id);
-	tpcc_workload_ptr->history_table_.template set_value_by_key<"H_D_ID"_tstr>(row_idx, w_id);
-	tpcc_workload_ptr->history_table_.template set_value_by_key<"H_W_ID"_tstr>(row_idx, w_id);
-	tpcc_workload_ptr->history_table_.template set_value_by_key<"H_DATE"_tstr>(row_idx, 0);
-	tpcc_workload_ptr->history_table_.template set_value_by_key<"H_AMOUNT"_tstr>(row_idx, 10.0);
+	tpcc_workload_ptr->history_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"H_C_ID"_tstr> (c_id);
+	tpcc_workload_ptr->history_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"H_C_D_ID"_tstr>(d_id);
+	tpcc_workload_ptr->history_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"H_C_W_ID"_tstr>(d_id);
+	tpcc_workload_ptr->history_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"H_D_ID"_tstr>(w_id);
+	tpcc_workload_ptr->history_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"H_W_ID"_tstr>(w_id);
+	tpcc_workload_ptr->history_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"H_DATE"_tstr>(0);
+	tpcc_workload_ptr->history_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"H_AMOUNT"_tstr>(10.0);
 }
 
 void tpcc_wl::init_tab_order(benchmark::TpccWorkload* tpcc_workload_ptr, uint64_t did, uint64_t wid) {
@@ -510,14 +510,14 @@ void tpcc_wl::init_tab_order(benchmark::TpccWorkload* tpcc_workload_ptr, uint64_
 		}
 #endif
 
-		tpcc_workload_ptr->order_table_.template set_value_by_key<"O_ID"_tstr>        (row_idx, oid);
-		tpcc_workload_ptr->order_table_.template set_value_by_key<"O_C_ID"_tstr>      (row_idx, cid);
-		tpcc_workload_ptr->order_table_.template set_value_by_key<"O_D_ID"_tstr>      (row_idx, did);
-		tpcc_workload_ptr->order_table_.template set_value_by_key<"O_W_ID"_tstr>      (row_idx, wid);
-		tpcc_workload_ptr->order_table_.template set_value_by_key<"O_ENTRY_D"_tstr>   (row_idx, o_entry);
-		tpcc_workload_ptr->order_table_.template set_value_by_key<"O_CARRIER_ID"_tstr>(row_idx, o_carrier_id);
-		tpcc_workload_ptr->order_table_.template set_value_by_key<"O_OL_CNT"_tstr>    (row_idx, o_ol_cnt);
-		tpcc_workload_ptr->order_table_.template set_value_by_key<"O_ALL_LOCAL"_tstr> (row_idx, 1);
+		tpcc_workload_ptr->order_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"O_ID"_tstr>        (oid);
+		tpcc_workload_ptr->order_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"O_C_ID"_tstr>      (cid);
+		tpcc_workload_ptr->order_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"O_D_ID"_tstr>      (did);
+		tpcc_workload_ptr->order_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"O_W_ID"_tstr>      (wid);
+		tpcc_workload_ptr->order_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"O_ENTRY_D"_tstr>   (o_entry);
+		tpcc_workload_ptr->order_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"O_CARRIER_ID"_tstr>(o_carrier_id);
+		tpcc_workload_ptr->order_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"O_OL_CNT"_tstr>    (o_ol_cnt);
+		tpcc_workload_ptr->order_table_.template get_ref_by_key<"data"_tstr>(row_idx).template set_by_key<"O_ALL_LOCAL"_tstr> (1);
 		row_idx++;
 
 		// NEW ORDER
@@ -527,9 +527,9 @@ void tpcc_wl::init_tab_order(benchmark::TpccWorkload* tpcc_workload_ptr, uint64_
 			// row->set_value(NO_D_ID, did);
 			// row->set_value(NO_W_ID, wid);
 
-			tpcc_workload_ptr->new_order_table_.template set_value_by_key<"NO_O_ID"_tstr>(row_idx - 2100 - 1, oid);
-			tpcc_workload_ptr->new_order_table_.template set_value_by_key<"NO_D_ID"_tstr>(row_idx - 2100 - 1, did);
-			tpcc_workload_ptr->new_order_table_.template set_value_by_key<"NO_W_ID"_tstr>(row_idx - 2100 - 1, wid);
+			tpcc_workload_ptr->new_order_table_.template get_ref_by_key<"data"_tstr>(row_idx - 2100 - 1).template set_by_key<"NO_O_ID"_tstr>(oid);
+			tpcc_workload_ptr->new_order_table_.template get_ref_by_key<"data"_tstr>(row_idx - 2100 - 1).template set_by_key<"NO_D_ID"_tstr>(did);
+			tpcc_workload_ptr->new_order_table_.template get_ref_by_key<"data"_tstr>(row_idx - 2100 - 1).template set_by_key<"NO_W_ID"_tstr>(wid);
 		}
 	}
 }
